@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .methods import biseccion, regla_falsa, punto_fijo, newton_raphson
+from .methods import biseccion, regla_falsa, punto_fijo, newton_raphson, secante
 from .graph import graficar_funcion
 
 # Create your views here.
@@ -111,3 +111,29 @@ def newton_view(request):
         }
 
     return render(request, 'newton.html', context)
+
+def secante_view(request):
+    context = {}
+    if request.method == 'POST':
+        f_str = request.POST['f']
+        x0 = float(request.POST['x0'])
+        x1 = float(request.POST['x1'])
+        tol = float(request.POST['tol'])
+        niter = int(request.POST['niter'])
+
+        resultado, tabla, mensaje = secante(x0, x1, tol, niter, f_str)
+        grafico = graficar_funcion(f_str, x0 - 5, x1 + 5, resultado)
+
+        context = {
+            'funcion': f_str,
+            'x0': x0,
+            'x1': x1,
+            'tol': tol,
+            'niter': niter,
+            'resultado': resultado,
+            'tabla': tabla,
+            'mensaje': mensaje,
+            'grafico': grafico,
+        }
+
+    return render(request, 'secante.html', context)

@@ -165,3 +165,44 @@ def newton_raphson(x0, tol, niter, f_str):
         mensaje = f"Fracasó en {niter} iteraciones"
 
     return xn, tabla, mensaje
+
+def secante(x0, x1, tol, niter, f_str):
+    x = symbols('x')
+    f_expr = sympify(f_str)
+    f = lambdify(x, f_expr, modules=["numpy"])
+
+    xn = [x0, x1]
+    fm = [f(x0), f(x1)]
+    E = [tol + 1]
+    tabla = []
+
+    # Primeras dos filas
+    tabla.append((0, xn[0], fm[0], None))
+    tabla.append((1, xn[1], fm[1], E[0]))
+
+    c = 1
+    while E[-1] > tol and fm[-1] != 0 and c < niter:
+        try:
+            x_next = xn[-1] - (fm[-1] * (xn[-1] - xn[-2])) / (fm[-1] - fm[-2])
+        except ZeroDivisionError:
+            break
+
+        fx_next = f(x_next)
+        error = abs(x_next - xn[-1])
+
+        xn.append(x_next)
+        fm.append(fx_next)
+        E.append(error)
+
+        c += 1
+        tabla.append((c, x_next, fx_next, error))
+
+    # Mensaje final
+    if fm[-1] == 0:
+        mensaje = f"{xn[-1]} es raíz de f(x)"
+    elif E[-1] < tol:
+        mensaje = f"{xn[-1]} es una aproximación de una raíz con tolerancia = {tol}"
+    else:
+        mensaje = f"Fracasó en {niter} iteraciones"
+
+    return xn[-1], tabla, mensaje
