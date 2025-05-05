@@ -141,11 +141,11 @@
                     {% for fila in tabla %}
                     <tr>
                         <td>{{ fila.0 }}</td>
-                        <td>{{ fila.1|floatformat:6 }}</td>
-                        <td>{{ fila.2|floatformat:6 }}</td>
+                        <td>{{ fila.1 }}</td>
+                        <td>{{ fila.2 }}</td>
                         <td>
                             {% if fila.3 is not None %}
-                                {{ fila.3|floatformat:6 }}
+                                {{ fila.3 }}
                             {% else %}
                                 ----
                             {% endif %}
@@ -157,7 +157,7 @@
         </div>
     
         <div class="alert alert-info mt-3">
-            Resultado final: <strong>{{ resultado|floatformat:6 }}</strong> — {{ mensaje }}
+            Resultado final: <strong>{{ resultado }}</strong> — {{ mensaje }}
         </div>
 
         {% if grafico %}

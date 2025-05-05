@@ -249,3 +249,49 @@ def raices_multiples(x0, tol, niter, f_str):
         mensaje = f"Fracasó en {niter} iteraciones"
 
     return x0, tabla, mensaje
+
+
+def calcular_funcion_g_optima(f_str, x0):
+    """
+    Calcula automáticamente una buena función g(x) para el método de punto fijo.
+    Busca un valor de k para g(x) = x - f(x)/k que optimice la convergencia.
+    """
+    x = symbols('x')
+    f_expr = sympify(f_str)
+    f_prime = diff(f_expr, x)
+    
+    # Evaluar f'(x0)
+    f_prime_func = lambdify(x, f_prime, modules=["numpy"])
+    f_prime_x0 = f_prime_func(x0)
+    
+    # Si f'(x0) es cercano a cero, usamos un valor predeterminado
+    if abs(f_prime_x0) < 1e-10:
+        k = 1.0
+        convergencia_info = "f'(x0) ≈ 0, usando k=1"
+    else:
+        # Probar diferentes valores de k
+        best_k = 1.0
+        best_derivative = float('inf')
+        
+        # Probar valores de k en un rango
+        for k in np.linspace(0.5, 10, 20):
+            # g(x) = x - f(x)/k
+            g_expr = x - f_expr/k
+            g_prime = diff(g_expr, x)
+            g_prime_func = lambdify(x, g_prime, modules=["numpy"])
+            
+            try:
+                g_prime_x0 = abs(g_prime_func(x0))
+                if g_prime_x0 < best_derivative and g_prime_x0 < 1:
+                    best_derivative = g_prime_x0
+                    best_k = k
+            except:
+                continue
+        
+        k = best_k
+        convergencia_info = f"|g'(x0)| = {best_derivative:.4f} con k={k:.4f}"
+    
+    # Construir la función g(x)
+    g_str = f"x - ({f_str})/{k}"
+    
+    return g_str, convergencia_info
