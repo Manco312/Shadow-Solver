@@ -295,3 +295,158 @@ def calcular_funcion_g_optima(f_str, x0):
     g_str = f"x - ({f_str})/{k}"
     
     return g_str, convergencia_info
+
+def ejecutar_todos(f_str, g_str, xi, xs, tol, niter, x1):
+    """
+    Ejecuta todos los métodos y devuelve los resultados.
+    """
+    resultados_comparativos = []
+
+    x0 = xi
+
+    if xs is None:
+        xi = x0 - 2
+        xs = x0 + 2
+
+
+    resultados = {}
+    
+    # Bisección
+    tabla_biseccion, resultado_biseccion, mensaje_biseccion = biseccion(f_str, xi, xs, tol, niter)
+    if resultado_biseccion is not None:
+        n_biseccion = len(tabla_biseccion) - 1
+        error_biseccion = tabla_biseccion[-1][3] if n_biseccion > 0 and tabla_biseccion[-1][3] is not None else "N/A"
+        resultados_comparativos.append({
+            'metodo': 'Bisección',
+            'xs': resultado_biseccion,
+            'n': n_biseccion,
+            'error': error_biseccion
+        })
+
+    else:
+        # Añadir mensaje de error
+        resultados_comparativos.append({
+            'metodo': 'Bisección',
+            'xs': "N/A",
+            'n': "N/A",
+            'error': "N/A",
+            'info': mensaje_biseccion  # "Intervalo inadecuado"
+        })
+    
+    # Regla Falsa
+    tabla_regla_falsa, resultado_regla_falsa, mensaje_regla_falsa = regla_falsa(f_str, xi, xs, tol, niter)
+    if resultado_regla_falsa is not None:
+        n_regla_falsa = len(tabla_regla_falsa) - 1
+        error_regla_falsa = tabla_regla_falsa[-1][3] if n_regla_falsa > 0 and tabla_regla_falsa[-1][3] is not None else "N/A"
+        resultados_comparativos.append({
+            'metodo': 'Regla Falsa',
+            'xs': resultado_regla_falsa,
+            'n': n_regla_falsa,
+            'error': error_regla_falsa
+        })
+
+    else:
+        # Añadir mensaje de error
+        resultados_comparativos.append({
+            'metodo': 'Regla Falsa',
+            'xs': "N/A",
+            'n': "N/A",
+            'error': "N/A",
+            'info': mensaje_regla_falsa
+        })
+    
+    # Punto Fijo
+    if g_str is None:
+        g_str, convergencia_info = calcular_funcion_g_optima(f_str, x0)
+    resultado_punto_fijo, tabla_punto_fijo, mensaje_punto_fijo = punto_fijo(x0, tol, niter, f_str, g_str)
+    if resultado_punto_fijo is not None:
+        n_punto_fijo = len(tabla_punto_fijo) - 1
+        error_punto_fijo = tabla_punto_fijo[-1][3] if n_punto_fijo > 0 and tabla_punto_fijo[-1][3] is not None else "N/A"
+        resultados_comparativos.append({
+            'metodo': 'Punto Fijo',
+            'xs': resultado_punto_fijo,
+            'n': n_punto_fijo,
+            'error': error_punto_fijo,
+            'g_str': g_str,
+            'convergencia_info': convergencia_info
+        })
+
+    else:
+        # Añadir mensaje de error
+        resultados_comparativos.append({
+            'metodo': 'Punto Fijo',
+            'xs': "N/A",
+            'n': "N/A",
+            'error': "N/A",
+            'info': mensaje_punto_fijo
+        })
+
+    # Newton-Raphson
+    resultado_newton, tabla_newton, mensaje_newton = newton_raphson(x0, tol, niter, f_str)
+    if resultado_newton is not None:
+        n_newton = len(tabla_newton) - 1
+        error_newton = tabla_newton[-1][3] if n_newton > 0 and tabla_newton[-1][3] is not None else "N/A"
+        resultados_comparativos.append({
+            'metodo': 'Newton',
+            'xs': resultado_newton,
+            'n': n_newton,
+            'error': error_newton
+        })
+
+    else:
+        # Añadir mensaje de error
+        resultados_comparativos.append({
+            'metodo': 'Newton',
+            'xs': "N/A",
+            'n': "N/A",
+            'error': "N/A",
+            'info': mensaje_newton
+        })
+    
+    # Secante
+    if x1 is None:
+        x1 = x0 + 1
+    resultado_secante, tabla_secante, mensaje_secante = secante(x0, x1, tol, niter, f_str)
+    if resultado_secante is not None:
+        n_secante = len(tabla_secante) - 1
+        error_secante = tabla_secante[-1][3] if n_secante > 0 and tabla_secante[-1][3] is not None else "N/A"
+        resultados_comparativos.append({
+            'metodo': 'Secante',
+            'xs': resultado_secante,
+            'n': n_secante,
+            'error': error_secante
+        })
+
+    else:
+        # Añadir mensaje de error
+        resultados_comparativos.append({
+            'metodo': 'Secante',
+            'xs': "N/A",
+            'n': "N/A",
+            'error': "N/A",
+            'info': mensaje_secante
+        })
+    
+    # Raíces Múltiples
+    resultado_rm, tabla_rm, mensaje_rm = raices_multiples(x0, tol, niter, f_str)
+    if resultado_rm is not None:
+        n_rm = len(tabla_rm) - 1
+        error_rm = tabla_rm[-1][3] if n_rm > 0 and tabla_rm[-1][3] is not None else "N/A"
+        resultados_comparativos.append({
+            'metodo': 'Raíces Múltiples',
+            'xs': resultado_rm,
+            'n': n_rm,
+            'error': error_rm
+        })
+
+    else:
+        # Añadir mensaje de error
+        resultados_comparativos.append({
+            'metodo': 'Secante',
+            'xs': "N/A",
+            'n': "N/A",
+            'error': "N/A",
+            'info': mensaje_rm
+        })
+    
+    return resultados_comparativos
