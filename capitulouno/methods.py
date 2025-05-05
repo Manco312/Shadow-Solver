@@ -358,6 +358,8 @@ def ejecutar_todos(f_str, g_str, xi, xs, tol, niter, x1):
     # Punto Fijo
     if g_str is None:
         g_str, convergencia_info = calcular_funcion_g_optima(f_str, x0)
+    else:
+        convergencia_info = "Función g proporcionada por el usuario"
     resultado_punto_fijo, tabla_punto_fijo, mensaje_punto_fijo = punto_fijo(x0, tol, niter, f_str, g_str)
     if resultado_punto_fijo is not None:
         n_punto_fijo = len(tabla_punto_fijo) - 1

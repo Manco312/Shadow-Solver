@@ -72,6 +72,42 @@
             margin: 0 auto;
             padding: 20px;
         }
+
+        /* Estilos mejorados para la tabla comparativa */
+        .table-comparativa {
+            background-color: #2C2C2C;
+            border: 2px solid #E60012;
+            border-radius: 10px;
+            overflow: hidden;
+            color: #F5F5F5;
+        }
+        
+        .table-comparativa th {
+            background-color: #E60012;
+            color: white;
+            text-align: center;
+            border-color: #444;
+        }
+        
+        .table-comparativa td {
+            border-color: #444;
+        }
+        
+        .table-comparativa tr:nth-child(odd) {
+            background-color: #222;
+        }
+        
+        .table-comparativa tr:hover {
+            background-color: #333;
+        }
+        
+        .metodo-info {
+            background-color: #2C2C2C;
+            border: 1px solid #E60012;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -164,6 +200,50 @@
         <div class="text-center mt-4">
             <h5>Gráfica de f(x)</h5>
             <img src="data:image/png;base64,{{ grafico }}" alt="Gráfica de f(x)" class="img-fluid rounded border border-danger" style="max-width: 100%; height: auto;">
+        </div>
+        {% endif %}
+
+        <!-- Tabla comparativa de métodos -->
+        {% if resultados_comparativos %}
+        <div class="mt-5">
+            <h3 class="text-center mb-4">Tabla Comparativa de Métodos</h3>
+            
+            <div class="table-responsive">
+                <table class="table table-comparativa table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th>Método</th>
+                            <th>Xs</th>
+                            <th>n</th>
+                            <th>Error final</th>
+                            <th>Información adicional</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for resultado in resultados_comparativos %}
+                        <tr>
+                            <td>{{ resultado.metodo }}</td>
+                            <td>{{ resultado.xs}}</td>
+                            <td>{{ resultado.n }}</td>
+                            <td>
+                                {% if resultado.error != "N/A" %}
+                                    {{ resultado.error|floatformat:6 }}
+                                {% else %}
+                                    {{ resultado.error }}
+                                {% endif %}
+                            </td>
+                            <td class="text-start">
+                                {% if resultado.metodo == 'Punto Fijo' and resultado.g_str %}
+                                    <strong>g(x) = </strong>{{ resultado.g_str }}<br>
+                                    <small>{{ resultado.convergencia_info }}</small><br>
+                                {% endif %}
+                                {{ resultado.info }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% endif %}
 

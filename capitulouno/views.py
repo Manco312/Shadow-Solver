@@ -17,8 +17,10 @@ def biseccion_view(request):
         niter = int(request.POST.get('niter'))
 
         tabla, resultado, mensaje = biseccion(funcion, xi, xs, tol, niter)
-
         grafico = graficar_funcion(funcion, float(xi), float(xs), resultado) if resultado else None
+
+        # Ejecutar todos los métodos
+        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None)
 
         context = {
             'tabla': tabla,
@@ -30,6 +32,7 @@ def biseccion_view(request):
             'tol': tol,
             'niter': niter,
             'grafico': grafico,
+            'resultados_comparativos': resultados_comparativos
         }
 
     return render(request, 'biseccion.html', context)
@@ -45,8 +48,10 @@ def regla_falsa_view(request):
         niter = int(request.POST.get('niter'))
 
         tabla, resultado, mensaje = regla_falsa(funcion, xi, xs, tol, niter)
-
         grafico = graficar_funcion(funcion, float(xi), float(xs), resultado) if resultado else None
+
+        # Ejecutar todos los métodos
+        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None)
 
         context = {
             'tabla': tabla,
@@ -58,6 +63,7 @@ def regla_falsa_view(request):
             'tol': tol,
             'niter': niter,
             'grafico': grafico,
+            'resultados_comparativos': resultados_comparativos
         }
 
     return render(request, 'reglafalsa.html', context)
@@ -74,6 +80,9 @@ def punto_fijo_view(request):
         resultado, tabla, mensaje = punto_fijo(x0, tol, niter, f_str, g_str)
         grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
 
+        # Ejecutar todos los métodos
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=g_str, xi=x0, xs=None, tol=tol, niter=niter, x1=None)
+
         context = {
             'funcion': f_str,
             'g': g_str,
@@ -84,6 +93,7 @@ def punto_fijo_view(request):
             'tabla': tabla,
             'mensaje': mensaje,
             'grafico': grafico,
+            'resultados_comparativos': resultados_comparativos
         }
 
     return render(request, 'puntofijo.html', context)
@@ -99,6 +109,9 @@ def newton_view(request):
         resultado, tabla, mensaje = newton_raphson(x0, tol, niter, f_str)
         grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
 
+        # Ejecutar todos los métodos
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None)
+
         context = {
             'funcion': f_str,
             'x0': x0,
@@ -108,6 +121,7 @@ def newton_view(request):
             'tabla': tabla,
             'mensaje': mensaje,
             'grafico': grafico,
+            'resultados_comparativos': resultados_comparativos
         }
 
     return render(request, 'newton.html', context)
@@ -124,6 +138,9 @@ def secante_view(request):
         resultado, tabla, mensaje = secante(x0, x1, tol, niter, f_str)
         grafico = graficar_funcion(f_str, x0 - 5, x1 + 5, resultado)
 
+        # Ejecutar todos los métodos
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=x1)
+
         context = {
             'funcion': f_str,
             'x0': x0,
@@ -134,6 +151,7 @@ def secante_view(request):
             'tabla': tabla,
             'mensaje': mensaje,
             'grafico': grafico,
+            'resultados_comparativos': resultados_comparativos
         }
 
     return render(request, 'secante.html', context)
@@ -150,7 +168,7 @@ def raices_multiples_view(request):
         resultado, tabla, mensaje = raices_multiples(x0, tol, niter, f_str)
         grafico = graficar_funcion(f_str, x0 - 5, x0 + 5, resultado)
 
-        # Ejecutar los demás métodos
+        # Ejecutar todos los métodos
         resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None)
 
         context = {

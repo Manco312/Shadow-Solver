@@ -1,6 +1,5 @@
 Capítulo 1:
 
-- Tabla comparativa
 - Permitir C.S
 - Blindar errores
 
