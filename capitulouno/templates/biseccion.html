@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Capítulo 1</title>
+    <title>Bisección</title>
     <link rel="icon" href="{% static 'images/morganaicon.png' %}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -87,68 +87,82 @@
             </div>
         </div>
     </nav>
-    
-    <br>
-    <br>
-    <br>
-    <h1>Capítulo 1</h1>
-    <div class="container methods-container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <!-- Bisección -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Bisección</h5>
-                        <a href="{% url 'biseccion' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Regla Falsa -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Regla Falsa</h5>
-                        <a href="{% url 'optionsch1' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Punto Fijo -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Punto Fijo</h5>
-                        <a href="{% url 'optionsch1' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Newton -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Newton</h5>
-                        <a href="{% url 'optionsch1' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Secante -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Secante</h5>
-                        <a href="{% url 'optionsch1' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Raíces múltiples -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Raíces múltiples</h5>
-                        <a href="{% url 'optionsch1' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Método de la Bisección</h2>
+
+        <!-- Cuadro de propiedades del método -->
+        <div class="alert alert-secondary text-light" style="background-color: #2C2C2C; border: 1px solid #E60012; border-radius: 15px;">
+            <h5 class="fw-bold">Información importante:</h5>
+            <ul>
+                <li>La función debe ser continua en el intervalo [xi, xs].</li>
+                <li>f(xi) y f(xs) deben tener signos opuestos (es decir, <em>f(xi) · f(xs) &lt; 0</em>).</li>
+                <li>Garantiza convergencia si se cumplen las condiciones anteriores.</li>
+                <li>El método reduce el intervalo a la mitad en cada iteración.</li>
+                <li>Es más lento comparado con otros métodos, pero muy confiable.</li>
+            </ul>
         </div>
+    
+        <form method="post" class="mb-4">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" name="funcion" placeholder="f(x)" value="{{ funcion }}" required>
+                </div>
+                <div class="col">
+                    <input type="number" step="any" class="form-control" name="xi" placeholder="Valor inicial xi" value="{{ xi }}" required>
+                </div>
+                <div class="col">
+                    <input type="number" step="any" class="form-control" name="xs" placeholder="Valor final xs" value="{{ xs }}" required>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col">
+                    <input type="number" step="any" class="form-control" name="tol" placeholder="Tolerancia" value="{{ tol }}" required>
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" name="niter" placeholder="Máx. iteraciones" value="{{ niter }}" required>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-metodo w-100">Calcular</button>
+                </div>
+            </div>
+        </form>
+    
+        {% if tabla %}
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>i</th>
+                        <th>xi</th>
+                        <th>f(xi)</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in tabla %}
+                    <tr>
+                        <td>{{ fila.0 }}</td>
+                        <td>{{ fila.1|floatformat:6 }}</td>
+                        <td>{{ fila.2|floatformat:6 }}</td>
+                        <td>
+                            {% if fila.3 is not None %}
+                                {{ fila.3|floatformat:6 }}
+                            {% else %}
+                                ----
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    
+        <div class="alert alert-info mt-3">
+            Resultado final: <strong>{{ resultado|floatformat:6 }}</strong> — {{ mensaje }}
+        </div>
+        {% endif %}
     </div>
 
     <!-- Bootstrap JS -->
