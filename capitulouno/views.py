@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .methods import biseccion, regla_falsa, punto_fijo, newton_raphson, secante
+from .methods import biseccion, regla_falsa, punto_fijo, newton_raphson, secante, raices_multiples
 from .graph import graficar_funcion
 
 # Create your views here.
@@ -137,3 +137,27 @@ def secante_view(request):
         }
 
     return render(request, 'secante.html', context)
+
+def raices_multiples_view(request):
+    context = {}
+    if request.method == 'POST':
+        f_str = request.POST['f']
+        x0 = float(request.POST['x0'])
+        tol = float(request.POST['tol'])
+        niter = int(request.POST['niter'])
+
+        resultado, tabla, mensaje = raices_multiples(x0, tol, niter, f_str)
+        grafico = graficar_funcion(f_str, x0 - 5, x0 + 5, resultado)
+
+        context = {
+            'f': f_str,
+            'x0': x0,
+            'tol': tol,
+            'niter': niter,
+            'resultado': resultado,
+            'tabla': tabla,
+            'mensaje': mensaje,
+            'grafico': grafico,
+        }
+
+    return render(request, 'raicesmultiples.html', context)

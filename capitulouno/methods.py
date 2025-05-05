@@ -206,3 +206,46 @@ def secante(x0, x1, tol, niter, f_str):
         mensaje = f"Fracasó en {niter} iteraciones"
 
     return xn[-1], tabla, mensaje
+
+def raices_multiples(x0, tol, niter, f_str):
+    x = symbols('x')
+    f_expr = sympify(f_str)
+    df_expr = diff(f_expr, x)
+    ddf_expr = diff(df_expr, x)
+
+    f = lambdify(x, f_expr, modules=['numpy'])
+    df = lambdify(x, df_expr, modules=['numpy'])
+    ddf = lambdify(x, ddf_expr, modules=['numpy'])
+
+    tabla = []
+    c = 0
+    fx = f(x0)
+    dfx = df(x0)
+    ddfx = ddf(x0)
+    error = tol + 1
+
+    tabla.append((c, x0, fx, error if c > 0 else None))
+
+    while error > tol and fx != 0 and dfx != 0 and c < niter:
+        denom = dfx**2 - fx * ddfx
+        if denom == 0:
+            break
+        x1 = x0 - (fx * dfx) / denom
+        error = abs(x1 - x0)
+        x0 = x1
+        fx = f(x0)
+        dfx = df(x0)
+        ddfx = ddf(x0)
+        c += 1
+        tabla.append((c, x0, fx, error))
+
+    if fx == 0:
+        mensaje = f"{x0} es raíz de f(x)"
+    elif error < tol:
+        mensaje = f"{x0} es una aproximación de una raíz con tolerancia = {tol}"
+    elif dfx == 0:
+        mensaje = f"{x0} es una posible raíz múltiple (f'(x) = 0)"
+    else:
+        mensaje = f"Fracasó en {niter} iteraciones"
+
+    return x0, tabla, mensaje

@@ -1,7 +1,5 @@
 Capítulo 1:
 
-- Secante
-- Raíces Múltiples
 - Tabla comparativa
 - Permitir C.S
 - Blindar errores
