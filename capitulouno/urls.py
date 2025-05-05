@@ -6,4 +6,5 @@ urlpatterns = [
     path('biseccion/', views.biseccion_view, name ='biseccion'),
     path('reglafalsa/', views.regla_falsa_view, name ='reglafalsa'),
     path('puntofijo/', views.punto_fijo_view, name ='puntofijo'),
+    path('newton/', views.newton_view, name ='newton'),
 ]

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .methods import biseccion, regla_falsa, punto_fijo
+from .methods import biseccion, regla_falsa, punto_fijo, newton_raphson
 from .graph import graficar_funcion
 
 # Create your views here.
@@ -87,3 +87,27 @@ def punto_fijo_view(request):
         }
 
     return render(request, 'puntofijo.html', context)
+
+def newton_view(request):
+    context = {}
+    if request.method == 'POST':
+        f_str = request.POST.get('f')
+        x0 = float(request.POST.get('x0'))
+        tol = float(request.POST.get('tol'))
+        niter = int(request.POST.get('niter'))
+
+        resultado, tabla, mensaje = newton_raphson(x0, tol, niter, f_str)
+        grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
+
+        context = {
+            'funcion': f_str,
+            'x0': x0,
+            'tol': tol,
+            'niter': niter,
+            'resultado': resultado,
+            'tabla': tabla,
+            'mensaje': mensaje,
+            'grafico': grafico,
+        }
+
+    return render(request, 'newton.html', context)

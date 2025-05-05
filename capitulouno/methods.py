@@ -1,4 +1,4 @@
-from sympy import symbols, sympify, Symbol
+from sympy import symbols, sympify, Symbol, diff
 from sympy.utilities.lambdify import lambdify
 import numpy as np
 
@@ -123,6 +123,44 @@ def punto_fijo(x0, tol, niter, f_str, g_str):
         mensaje = f"{xn} es raíz de f(x)"
     elif error < tol:
         mensaje = f"{xn} es una aproximación de una raíz con tolerancia = {tol}"
+    else:
+        mensaje = f"Fracasó en {niter} iteraciones"
+
+    return xn, tabla, mensaje
+
+def newton_raphson(x0, tol, niter, f_str):
+    x = symbols('x')
+    f_expr = sympify(f_str)
+    df_expr = diff(f_expr, x)
+
+    f = lambdify(x, f_expr, modules=["numpy"])
+    df = lambdify(x, df_expr, modules=["numpy"])
+
+    tabla = []
+    c = 0
+    xn = x0
+    fxn = f(xn)
+    dfxn = df(xn)
+    error = tol + 1
+
+    tabla.append((c, xn, fxn, None))
+
+    while error > tol and fxn != 0 and dfxn != 0 and c < niter:
+        x_next = xn - fxn / dfxn
+        fxn = f(x_next)
+        dfxn = df(x_next)
+        error = abs(x_next - xn)
+        xn = x_next
+        c += 1
+        tabla.append((c, xn, fxn, error))
+
+    # Generar mensaje de resultado
+    if fxn == 0:
+        mensaje = f"{xn} es raíz de f(x)"
+    elif error < tol:
+        mensaje = f"{xn} es una aproximación de una raíz con tolerancia = {tol}"
+    elif dfxn == 0:
+        mensaje = f"{xn} es una posible raíz múltiple (f'(x) = 0)"
     else:
         mensaje = f"Fracasó en {niter} iteraciones"
 
