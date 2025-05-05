@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bisección</title>
+    <title>Regla Falsa</title>
     <link rel="icon" href="{% static 'images/morganaicon.png' %}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -89,7 +89,7 @@
     </nav>
 
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Método de la Bisección</h2>
+        <h2 class="text-center mb-4">Método de la Regla Falsa</h2>
 
         <!-- Cuadro de propiedades del método -->
         <div class="alert alert-secondary text-light" style="background-color: #2C2C2C; border: 1px solid #E60012; border-radius: 15px;">
@@ -97,9 +97,9 @@
             <ul>
                 <li>La función debe ser continua en el intervalo [xi, xs].</li>
                 <li>f(xi) y f(xs) deben tener signos opuestos (es decir, <em>f(xi) · f(xs) &lt; 0</em>).</li>
-                <li>Garantiza convergencia si se cumplen las condiciones anteriores.</li>
-                <li>El método reduce el intervalo a la mitad en cada iteración.</li>
-                <li>Es más lento comparado con otros métodos, pero muy confiable.</li>
+                <li>Utiliza una fórmula basada en interpolación lineal para estimar la raíz.</li>
+                <li>Es más rápido que el método de bisección en muchos casos.</li>
+                <li>Requiere que la raíz esté contenida en el intervalo inicial para garantizar convergencia.</li>
             </ul>
         </div>
     

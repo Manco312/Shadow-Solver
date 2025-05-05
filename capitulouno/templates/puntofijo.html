@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Bisección</title>
+    <title>Regla Falsa</title>
     <link rel="icon" href="{% static 'images/morganaicon.png' %}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -89,17 +89,16 @@
     </nav>
 
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Método de la Bisección</h2>
+        <h2 class="text-center mb-4">Método del Punto Fijo</h2>
 
         <!-- Cuadro de propiedades del método -->
         <div class="alert alert-secondary text-light" style="background-color: #2C2C2C; border: 1px solid #E60012; border-radius: 15px;">
             <h5 class="fw-bold">Información importante:</h5>
             <ul>
-                <li>La función debe ser continua en el intervalo [xi, xs].</li>
-                <li>f(xi) y f(xs) deben tener signos opuestos (es decir, <em>f(xi) · f(xs) &lt; 0</em>).</li>
-                <li>Garantiza convergencia si se cumplen las condiciones anteriores.</li>
-                <li>El método reduce el intervalo a la mitad en cada iteración.</li>
-                <li>Es más lento comparado con otros métodos, pero muy confiable.</li>
+                <li>Se requiere una función g(x) tal que x = g(x) sea equivalente a f(x) = 0.</li>
+                <li>El valor inicial x₀ debe estar cerca de la raíz buscada.</li>
+                <li>El método puede no converger si |g'(x)| ≥ 1 en el intervalo.</li>
+                <li>Es un método simple y útil para funciones adecuadamente transformadas.</li>
             </ul>
         </div>
     
@@ -107,13 +106,13 @@
             {% csrf_token %}
             <div class="row">
                 <div class="col">
-                    <input type="text" class="form-control" name="funcion" placeholder="f(x)" value="{{ funcion }}" required>
+                    <input type="text" class="form-control" name="f" placeholder="f(x)" value="{{ f }}" required>
                 </div>
                 <div class="col">
-                    <input type="number" step="any" class="form-control" name="xi" placeholder="Valor inicial xi" value="{{ xi }}" required>
+                    <input type="text" class="form-control" name="g" placeholder="g(x)" value="{{ g }}" required>
                 </div>
                 <div class="col">
-                    <input type="number" step="any" class="form-control" name="xs" placeholder="Valor final xs" value="{{ xs }}" required>
+                    <input type="number" step="any" class="form-control" name="x0" placeholder="Valor inicial x₀" value="{{ x0 }}" required>
                 </div>
             </div>
             <div class="row mt-2">
