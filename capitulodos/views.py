@@ -37,10 +37,6 @@ def jacobi_view(request):
 
             tabla, mensaje = jacobi(x0, A, b, tol, niter, usar_cifras)
 
-            print("Tabla de resultados:")
-            for row in tabla:
-                print(row)
-
             context = {
                 'tabla': tabla,
                 'mensaje': mensaje,
@@ -54,6 +50,5 @@ def jacobi_view(request):
 
         except Exception as e:
             mensaje = f"Error: {str(e)}"
-            print(mensaje)
 
     return render(request, 'jacobi.html', context)
