@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', generalViews.home, name='home'),
     path('chapter1/', include('capitulouno.urls')),
+    path('chapter2/', include('capitulodos.urls')),
 ]

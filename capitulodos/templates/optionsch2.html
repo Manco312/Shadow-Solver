@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Capítulo 1</title>
+    <title>Capítulo 2</title>
     <link rel="icon" href="{% static 'images/morganaicon.png' %}" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -92,23 +92,23 @@
     <br>
     <br>
     <br>
-    <h1>Capítulo 1</h1>
+    <h1>Capítulo 2</h1>
     <div class="container methods-container">
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            <!-- Bisección -->
+            <!-- Jacobi -->
             <div class="col">
                 <div class="card h-100 text-center p-3">
                     <div class="card-body">
-                        <h5 class="card-title">Bisección</h5>
-                        <a href="{% url 'biseccion' %}" class="btn btn-metodo mt-3">Usar método</a>
+                        <h5 class="card-title">Jacobi</h5>
+                        <a href="{% url 'jacobi' %}" class="btn btn-metodo mt-3">Usar método</a>
                     </div>
                 </div>
             </div>
-            <!-- Regla Falsa -->
+            <!-- Gauss Seidel -->
             <div class="col">
                 <div class="card h-100 text-center p-3">
                     <div class="card-body">
-                        <h5 class="card-title">Regla Falsa</h5>
+                        <h5 class="card-title">Gauss Seidel (Matricial)</h5>
                         <a href="{% url 'reglafalsa' %}" class="btn btn-metodo mt-3">Usar método</a>
                     </div>
                 </div>
@@ -117,35 +117,8 @@
             <div class="col">
                 <div class="card h-100 text-center p-3">
                     <div class="card-body">
-                        <h5 class="card-title">Punto Fijo</h5>
+                        <h5 class="card-title">SOR</h5>
                         <a href="{% url 'puntofijo' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Newton -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Newton</h5>
-                        <a href="{% url 'newton' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Secante -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Secante</h5>
-                        <a href="{% url 'secante' %}" class="btn btn-metodo mt-3">Usar método</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Raíces múltiples -->
-            <div class="col">
-                <div class="card h-100 text-center p-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Raíces múltiples</h5>
-                        <a href="{% url 'raicesmultiples' %}" class="btn btn-metodo mt-3">Usar método</a>
                     </div>
                 </div>
             </div>
