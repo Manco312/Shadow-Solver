@@ -16,11 +16,13 @@ def biseccion_view(request):
         tol = float(request.POST.get('tol'))
         niter = int(request.POST.get('niter'))
 
-        tabla, resultado, mensaje = biseccion(funcion, xi, xs, tol, niter)
+        usar_cifras = request.POST.get('usar_cifras') == 'on'
+
+        tabla, resultado, mensaje = biseccion(funcion, xi, xs, tol, niter, usar_cifras)
         grafico = graficar_funcion(funcion, float(xi), float(xs), resultado) if resultado else None
 
         # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None)
+        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None, cs=usar_cifras)
 
         context = {
             'tabla': tabla,
@@ -47,11 +49,13 @@ def regla_falsa_view(request):
         tol = float(request.POST.get('tol'))
         niter = int(request.POST.get('niter'))
 
-        tabla, resultado, mensaje = regla_falsa(funcion, xi, xs, tol, niter)
+        usar_cifras = request.POST.get('usar_cifras') == 'on'
+
+        tabla, resultado, mensaje = regla_falsa(funcion, xi, xs, tol, niter, usar_cifras)
         grafico = graficar_funcion(funcion, float(xi), float(xs), resultado) if resultado else None
 
         # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None)
+        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None, cs=usar_cifras)
 
         context = {
             'tabla': tabla,
@@ -77,11 +81,13 @@ def punto_fijo_view(request):
         tol = float(request.POST.get('tol'))
         niter = int(request.POST.get('niter'))
 
-        resultado, tabla, mensaje = punto_fijo(x0, tol, niter, f_str, g_str)
+        usar_cifras = request.POST.get('usar_cifras') == 'on'
+
+        resultado, tabla, mensaje = punto_fijo(x0, tol, niter, f_str, g_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
 
         # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=g_str, xi=x0, xs=None, tol=tol, niter=niter, x1=None)
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=g_str, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
 
         context = {
             'funcion': f_str,
@@ -106,11 +112,13 @@ def newton_view(request):
         tol = float(request.POST.get('tol'))
         niter = int(request.POST.get('niter'))
 
-        resultado, tabla, mensaje = newton_raphson(x0, tol, niter, f_str)
+        usar_cifras = request.POST.get('usar_cifras') == 'on'
+
+        resultado, tabla, mensaje = newton_raphson(x0, tol, niter, f_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
 
         # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None)
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
 
         context = {
             'funcion': f_str,
@@ -135,11 +143,13 @@ def secante_view(request):
         tol = float(request.POST['tol'])
         niter = int(request.POST['niter'])
 
-        resultado, tabla, mensaje = secante(x0, x1, tol, niter, f_str)
+        usar_cifras = request.POST.get('usar_cifras') == 'on'
+
+        resultado, tabla, mensaje = secante(x0, x1, tol, niter, f_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 5, x1 + 5, resultado)
 
         # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=x1)
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=x1, cs=usar_cifras)
 
         context = {
             'funcion': f_str,
@@ -163,13 +173,15 @@ def raices_multiples_view(request):
         x0 = float(request.POST['x0'])
         tol = float(request.POST['tol'])
         niter = int(request.POST['niter'])
+
+        usar_cifras = request.POST.get('usar_cifras') == 'on'
         
         # Ejecutar el método de Raíces Múltiples
-        resultado, tabla, mensaje = raices_multiples(x0, tol, niter, f_str)
+        resultado, tabla, mensaje = raices_multiples(x0, tol, niter, f_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 5, x0 + 5, resultado)
 
         # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None)
+        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
 
         context = {
             'f': f_str,

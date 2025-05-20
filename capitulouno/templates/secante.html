@@ -159,6 +159,14 @@
                     <input type="number" class="form-control" name="niter" placeholder="Máx. iteraciones" value="{{ niter }}" required>
                 </div>
                 <div class="col">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="usar_cifras" id="usar_cifras" {% if usar_cifras %}checked{% endif %}>
+                        <label class="form-check-label" for="usar_cifras">
+                            Usar cifras significativas
+                        </label>
+                    </div>
+                </div>
+                <div class="col">
                     <button type="submit" class="btn btn-metodo w-100">Calcular</button>
                 </div>
             </div>
