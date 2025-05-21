@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Método SOR (Successive Over-Relaxation)</title>
+    <link rel="icon" href="{% static 'images/morganaicon.png' %}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #0F0F0F;
+            color: #F5F5F5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 80px;
+        }
+        .navbar-custom {
+            background-color: #E60012;
+        }
+        .navbar-brand img {
+            height: 60px;
+        }
+        .nav-link {
+            color: white !important;
+            font-weight: bold;
+        }
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #FFFFFF;
+        }
+        .card {
+            background-color: #2C2C2C;
+            border: 2px solid #E60012;
+            color: #F5F5F5;
+            border-radius: 15px;
+        }
+        .btn-metodo {
+            background-color: #00B8F4;
+            color: #0F0F0F;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+        }
+        .btn-metodo:hover {
+            background-color: #019AC5;
+        }
+        .table-dark th {
+            background-color: #E60012;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand me-3" href="{% url 'home' %}">
+                    <img src="{% static 'images/morganaicon.png' %}" alt="Logo">
+                </a>
+                <a class="nav-link me-3" href="{% url 'optionsch1' %}">Capítulo 1</a>
+                <a class="nav-link" href="{% url 'optionsch2' %}">Capítulo 2</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2>Método SOR (Successive Over-Relaxation)</h2>
+
+        <div class="alert alert-secondary text-light" style="background-color: #2C2C2C; border: 1px solid #E60012; border-radius: 15px;">
+            <h5 class="fw-bold">Información importante:</h5>
+            <ul>
+                <li>Mejora la convergencia del método de Gauss-Seidel usando un factor de relajación <code>ω</code>.</li>
+                <li>Fórmula: <code>x_i^(k+1) = (1-ω)*x_i^(k) + (ω/a_ii)*(b_i - Σ a_ij x_j)</code></li>
+                <li>El factor <code>ω</code> típicamente está entre 0 y 2; valores cercanos a 1 corresponden a Gauss-Seidel.</li>
+                <li>Se puede usar tolerancia basada en decimales correctos (por defecto) o cifras significativas.</li>
+            </ul>
+        </div>
+
+        <form method="post" id="sorForm" class="mb-4">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="matrix_size" class="form-label">Tamaño de la matriz:</label>
+                <select id="matrix_size" name="matrix_size" class="form-select" required onchange="generateMatrixInputs()">
+                    {% for i in "234567" %}
+                        <option value="{{ i }}" {% if matrix_size == i|stringformat:"s" %}selected{% endif %}>{{ i }} x {{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Sección para ingresar matriz A -->
+            <div id="matrixAContainer" class="mb-3">
+                <label class="form-label">Matriz A:</label>
+                <div id="matrixA" class="d-flex flex-column gap-2"></div>
+            </div>
+
+            <!-- Sección para ingresar vector b -->
+            <div id="vectorBContainer" class="mb-3">
+                <label class="form-label">Vector b:</label>
+                <div id="vectorB" class="d-flex flex-column gap-2"></div>
+            </div>
+
+            <!-- Sección para ingresar vector x0 -->
+            <div id="vectorX0Container" class="mb-3">
+                <label class="form-label">Vector inicial x0:</label>
+                <div id="vectorX0" class="d-flex flex-column gap-2"></div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    <input type="number" step="any" class="form-control" name="tol" placeholder="Tolerancia" value="{{ tol }}" required>
+                </div>
+                <div class="col">
+                    <input type="number" class="form-control" name="niter" placeholder="Máx. iteraciones" value="{{ niter }}" required>
+                </div>
+                <div class="col">
+                    <input type="number" step="any" min="0" max="2" class="form-control" name="w" placeholder="Factor de relajación ω (0-2)" value="{{ w }}" required>
+                </div>
+                <div class="col d-flex align-items-center">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="checkbox" name="usar_cifras" id="usar_cifras" {% if usar_cifras %}checked{% endif %}>
+                        <label class="form-check-label" for="usar_cifras">Usar cifras significativas</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-metodo w-100">Calcular</button>
+                </div>
+            </div>
+        </form>
+
+        {% if tabla %}
+        <div class="table-responsive mt-4">
+            <table class="table table-dark table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th>Iteración</th>
+                        <th>Vector x [x1, x2, ..., xn]</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fila in tabla %}
+                    <tr>
+                        <td>{{ fila.0 }}</td>
+                        <td>[{% for val in fila.1 %}{{ val }}{% if not forloop.last %}, {% endif %}{% endfor %}]</td>
+                        <td>
+                            {% if fila.2 is not None %}
+                                {{ fila.2 }}
+                            {% else %}
+                                ----
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            Resultado final: {{ mensaje }}
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function generateMatrixInputs() {
+            const size = parseInt(document.getElementById("matrix_size").value);
+
+            const matrixA = document.getElementById("matrixA");
+            const vectorB = document.getElementById("vectorB");
+            const vectorX0 = document.getElementById("vectorX0");
+
+            // Limpiar inputs previos
+            matrixA.innerHTML = "";
+            vectorB.innerHTML = "";
+            vectorX0.innerHTML = "";
+
+            // Crear inputs para matriz A
+            for (let i = 0; i < size; i++) {
+                const row = document.createElement("div");
+                row.classList.add("d-flex", "gap-2");
+                for (let j = 0; j < size; j++) {
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.step = "any";
+                    input.required = true;
+                    input.name = `a_${i}_${j}`;
+                    input.classList.add("form-control");
+                    row.appendChild(input);
+                }
+                matrixA.appendChild(row);
+            }
+
+            // Crear inputs para vector b y x0
+            for (let i = 0; i < size; i++) {
+                const inputB = document.createElement("input");
+                inputB.type = "number";
+                inputB.step = "any";
+                inputB.required = true;
+                inputB.name = `b_${i}`;
+                inputB.classList.add("form-control");
+                vectorB.appendChild(inputB);
+
+                const inputX0 = document.createElement("input");
+                inputX0.type = "number";
+                inputX0.step = "any";
+                inputX0.required = true;
+                inputX0.name = `x0_${i}`;
+                inputX0.classList.add("form-control");
+                vectorX0.appendChild(inputX0);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            generateMatrixInputs();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
