@@ -161,6 +161,56 @@
             Resultado final: {{ mensaje }}
         </div>
         {% endif %}
+
+        {% if resultados_todos %}
+            <div class="mt-5">
+                <h3 class="text-center mb-4">Comparación de Métodos</h3>
+                <div class="table-responsive">
+                    <table class="table table-dark table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th>Método</th>
+                                <th>Factor w</th>
+                                <th>Iteraciones</th>
+                                <th>Vector solución</th>
+                                <th>Error final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for metodo, datos in resultados_todos.items %}
+                            <tr>
+                                <td>{{ metodo }}</td>
+                                <td>
+                                    {% if datos.w %}
+                                        {{ datos.w }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>{{ datos.n_alcanzado }}</td>
+                                <td>[{% for val in datos.x_sol %}{{ val }}{% if not forloop.last %}, {% endif %}{% endfor %}]</td>
+                                <td>{{ datos.error_final }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-secondary text-light mt-4" style="background-color: #2C2C2C; border: 1px solid #E60012; border-radius: 15px;">
+                    <h5 class="fw-bold">Análisis de resultados:</h5>
+                    <p>
+                        La tabla muestra la comparación entre los diferentes métodos iterativos para resolver el sistema de ecuaciones.
+                        Observe las diferencias en la velocidad de convergencia (número de iteraciones) y la precisión final alcanzada.
+                    </p>
+                    <ul>
+                        <li>Para el método SOR, se utilizaron valores aleatorios del factor de relajación w cercanos a 1.</li>
+                        <li>Valores de w entre 0 y 1 suelen producir una convergencia más lenta pero más estable.</li>
+                        <li>Valores de w entre 1 y 2 pueden acelerar la convergencia, pero también pueden causar divergencia si son demasiado grandes.</li>
+                        <li>El valor óptimo de w depende de las características específicas de la matriz del sistema.</li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
     </div>
 
     <script>

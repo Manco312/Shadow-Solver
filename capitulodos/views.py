@@ -1,6 +1,6 @@
 import numpy as np
 from django.shortcuts import render
-from .methods import jacobi, gauss_seidel, sor
+from .methods import jacobi, gauss_seidel, sor, ejecutar_todos
 
 # Create your views here.
 
@@ -37,6 +37,9 @@ def jacobi_view(request):
 
             tabla, mensaje = jacobi(x0, A, b, tol, niter, usar_cifras)
 
+            # Ejecutar todos los métodos para la tabla comparativa
+            resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+
             context = {
                 'tabla': tabla,
                 'mensaje': mensaje,
@@ -45,7 +48,9 @@ def jacobi_view(request):
                 'b': b,
                 'x0': x0,
                 'tol': tol,
-                'niter': niter
+                'niter': niter,
+                'usar_cifras': usar_cifras,
+                'resultados_todos': resultados_todos
             }
 
         except Exception as e:
@@ -79,6 +84,9 @@ def gauss_seidel_view(request):
 
             tabla, mensaje = gauss_seidel(x0, A, b, tol, niter, usar_cifras)
 
+            # Ejecutar todos los métodos para la tabla comparativa
+            resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+
             context = {
                 'tabla': tabla,
                 'mensaje': mensaje,
@@ -88,7 +96,8 @@ def gauss_seidel_view(request):
                 'x0': x0,
                 'tol': tol,
                 'niter': niter,
-                'usar_cifras': usar_cifras
+                'usar_cifras': usar_cifras,
+                'resultados_todos': resultados_todos
             }
         except Exception as e:
             context['mensaje'] = f"Error: {str(e)}"
@@ -123,6 +132,9 @@ def sor_view(request):
 
             tabla, mensaje = sor(x0, A, b, tol, niter, w, usar_cifras)
 
+            # Ejecutar todos los métodos para la tabla comparativa
+            resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+
             context.update({
                 'tabla': tabla,
                 'mensaje': mensaje,
@@ -133,7 +145,8 @@ def sor_view(request):
                 'tol': tol,
                 'niter': niter,
                 'w': w,
-                'usar_cifras': usar_cifras
+                'usar_cifras': usar_cifras,
+                'resultados_todos': resultados_todos
             })
 
         except Exception as e:
