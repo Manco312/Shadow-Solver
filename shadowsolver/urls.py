@@ -23,4 +23,5 @@ urlpatterns = [
     path('', generalViews.home, name='home'),
     path('chapter1/', include('capitulouno.urls')),
     path('chapter2/', include('capitulodos.urls')),
+    path('chapter3/', include('capitulotres.urls')),
 ]
