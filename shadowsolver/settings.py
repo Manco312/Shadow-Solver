@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'general',
     'capitulouno',
     'capitulodos',
+    'capitulotres',
 ]
 
 MIDDLEWARE = [
