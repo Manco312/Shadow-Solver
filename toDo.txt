@@ -1,5 +1,5 @@
 Capítulo 3:
-- Métodos Spline (lineal y cúbico)
+- Informe comparativo en cada método
 
 General:
 
