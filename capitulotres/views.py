@@ -1,7 +1,7 @@
 import numpy as np
 from django.shortcuts import render
 from django.contrib import messages
-from .methods import vandermonde_interpolation, newton_interpolation, lagrange_interpolation, spline_interpolation
+from .methods import vandermonde_interpolation, newton_interpolation, lagrange_interpolation, spline_interpolation, comparar_metodos_interpolacion
 from .graph import graficar
 
 # Create your views here.
@@ -37,13 +37,21 @@ def vandermonde_view(request):
             a, poly_str, xpol, p, mensaje_error = vandermonde_interpolation(x, y)
             image_base64 = graficar(x, y, xpol, p)
 
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                resultados_comparacion = comparar_metodos_interpolacion(x, y)
+            else:
+                resultados_comparacion = None
+
             return render(request, 'vandermonde.html', {
                 'poly_str': poly_str,
                 'image_base64': image_base64,
                 'mensaje_error': mensaje_error,
                 'x_vals': x_vals,
                 'y_vals': y_vals,
-                'num_puntos': num_puntos
+                'num_puntos': num_puntos,
+                'resultados_comparacion': resultados_comparacion
             })
 
         except ValueError:
@@ -87,13 +95,21 @@ def newton_int_view(request):
             a, poly_str, xpol, p, mensaje_error = newton_interpolation(x, y)
             image_base64 = graficar(x, y, xpol, p)
 
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                resultados_comparacion = comparar_metodos_interpolacion(x, y)
+            else:
+                resultados_comparacion = None
+
             return render(request, 'newton_int.html', {
                 'poly_str': poly_str,
                 'image_base64': image_base64,
                 'mensaje_error': mensaje_error,
                 'x_vals': x_vals,
                 'y_vals': y_vals,
-                'num_puntos': num_puntos
+                'num_puntos': num_puntos,
+                'resultados_comparacion': resultados_comparacion
             })
 
         except ValueError:
@@ -136,13 +152,21 @@ def lagrange_view(request):
             poly_str, xpol, p, mensaje_error = lagrange_interpolation(x, y)
             image_base64 = graficar(x, y, xpol, p)
 
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                resultados_comparacion = comparar_metodos_interpolacion(x, y)
+            else:
+                resultados_comparacion = None
+
             return render(request, 'lagrange.html', {
                 'poly_str': poly_str,
                 'image_base64': image_base64,
                 'mensaje_error': mensaje_error,
                 'x_vals': x_vals,
                 'y_vals': y_vals,
-                'num_puntos': num_puntos
+                'num_puntos': num_puntos,
+                'resultados_comparacion': resultados_comparacion
             })
 
         except ValueError:
@@ -190,6 +214,13 @@ def spline_view(request):
             poly_str, xpol, p, mensaje_error = spline_interpolation(x, y, tipo_spline)
             image_base64 = graficar(x, y, xpol, p)
 
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                resultados_comparacion = comparar_metodos_interpolacion(x, y)
+            else:
+                resultados_comparacion = None
+
             return render(request, 'spline.html', {
                 'poly_str': poly_str,
                 'image_base64': image_base64,
@@ -198,6 +229,7 @@ def spline_view(request):
                 'y_vals': y_vals,
                 'num_puntos': num_puntos,
                 'tipo_spline': tipo_spline,
+                'resultados_comparacion': resultados_comparacion
             })
 
         except ValueError:

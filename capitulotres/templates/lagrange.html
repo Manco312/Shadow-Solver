@@ -95,7 +95,16 @@
         </div>
 
         <button type="submit" class="btn btn-metodo w-100">Interpolar</button>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="comparar" id="comparar" {% if comparar %}checked{% endif %}>
+            <label class="form-check-label" for="comparar">
+                Informe comparativo
+            </label>
+        </div>
     </form>
+
+    <br>
 
     {% if poly_str %}
     <div class="card p-3 mb-4">
@@ -116,6 +125,32 @@
         <h5 class="text-center">Análisis de error por reducción de punto:</h5>
         <p class="text-center"><strong>{{ mensaje_error }}</strong></p>
     </div>
+    {% endif %}
+    <br>
+    {% if resultados_comparacion %}
+        <div class="card p-3 mb-4">
+            <h5 class="text-center">Comparación de métodos:</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered text-center mt-3">
+                    <thead>
+                        <tr>
+                            <th>Método</th>
+                            <th>Polinomio</th>
+                            <th>Error</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for metodo, polinomio, error in resultados_comparacion %}
+                            <tr>
+                                <td>{{ metodo }}</td>
+                                <td>{{ polinomio }}</td>
+                                <td>{{ error }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     {% endif %}
 </div>
 

@@ -1,6 +1,6 @@
 import numpy as np
 
-def vandermonde_interpolation(x, y):
+def vandermonde_interpolation(x, y, x_eliminado=None):
     # Calcular matriz de Vandermonde y resolver
     A = np.vander(x, increasing=False)
     a = np.linalg.solve(A, y)
@@ -22,7 +22,10 @@ def vandermonde_interpolation(x, y):
 
     # Eliminar un punto aleatorio y recalcular
     if len(x) > 2:
-        index_to_remove = np.random.randint(0, len(x))
+        if x_eliminado is not None:
+            index_to_remove = x_eliminado
+        else:
+            index_to_remove = np.random.randint(0, len(x))
         x_reduced = np.delete(x, index_to_remove)
         y_reduced = np.delete(y, index_to_remove)
         A_reduced = np.vander(x_reduced, increasing=False)
@@ -40,7 +43,7 @@ def vandermonde_interpolation(x, y):
     return a, poly_str, xpol, p, mensaje_error
 
 
-def newton_interpolation(x, y):
+def newton_interpolation(x, y, x_eliminado=None):
     n = len(x)
     diff_table = np.zeros((n, n))
     diff_table[:, 0] = y
@@ -70,7 +73,10 @@ def newton_interpolation(x, y):
 
     # Calcular error al eliminar un punto (sin recursividad)
     if n > 2:
-        index_to_remove = np.random.randint(0, n)
+        if x_eliminado is not None:
+            index_to_remove = x_eliminado
+        else:
+            index_to_remove = np.random.randint(0, n)
         x_reduced = np.delete(x, index_to_remove)
         y_reduced = np.delete(y, index_to_remove)
 
@@ -95,7 +101,7 @@ def newton_interpolation(x, y):
 
     return coef, poly_str, xpol, p, mensaje_error
 
-def lagrange_interpolation(x, y):
+def lagrange_interpolation(x, y, x_eliminado=None):
     def L(k, x_val):
         terms = [(x_val - x[j])/(x[k] - x[j]) for j in range(len(x)) if j != k]
         return np.prod(terms)
@@ -119,7 +125,10 @@ def lagrange_interpolation(x, y):
 
     # Quitar un punto aleatorio y recalcular
     if len(x) > 2:
-        index_to_remove = np.random.randint(0, len(x))
+        if x_eliminado is not None:
+            index_to_remove = x_eliminado
+        else:
+            index_to_remove = np.random.randint(0, len(x))
         x_reduced = np.delete(x, index_to_remove)
         y_reduced = np.delete(y, index_to_remove)
 
@@ -241,7 +250,7 @@ def spline_interpolation(x, y, tipo):
         else:
             # a3 x^3 + a2 x^2 + a1 x + a0
             terms.append(f"({coefs[0]:.4f})x³ + ({coefs[1]:.4f})x² + ({coefs[2]:.4f})x + ({coefs[3]:.4f})")
-        poly_str += f"Intervalo [{x[i]:.4f}, {x[i+1]:.4f}]:  {terms[0]}\n"
+        poly_str += f"Intervalo [{x[i]:.4f}, {x[i+1]:.4f}]:  {terms[0]} |\n"
 
     # Evaluar spline en puntos para gráfica
     xpol = np.linspace(x[0], x[-1], 500)
@@ -376,3 +385,49 @@ def evaluar_spline_punto(coef, x, xi, d):
                 return coef[i, 0] * xi**3 + coef[i, 1] * xi**2 + coef[i, 2] * xi + coef[i, 3]
     # Si no está en rango, devolver None o extrapolar (aquí None)
     return None
+
+
+
+def comparar_metodos_interpolacion(x, y):
+    resultados = []
+    
+    # Asegurar que hay al menos 3 puntos
+    if len(x) < 3:
+        return [], "Se necesitan al menos 3 puntos para comparar los métodos eliminando uno."
+
+    # Método Vandermonde
+    try:
+        _, polinomio_v, x_eval, p_eval, error_v = vandermonde_interpolation(x, y, 1)
+        resultados.append(("Vandermonde", polinomio_v, error_v))
+    except Exception as e:
+        resultados.append(("Vandermonde", "Error", str(e)))
+
+    # Método Newton
+    try:
+        _, polinomio_n, x_eval, p_eval, error_n = newton_interpolation(x, y, 1)
+        resultados.append(("Newton", polinomio_n, error_n))
+    except Exception as e:
+        resultados.append(("Newton", "Error", str(e)))
+
+    # Método Lagrange
+    try:
+        polinomio_l, x_eval, p_eval, error_l = lagrange_interpolation(x, y, 1)
+        resultados.append(("Lagrange", polinomio_l, error_l))
+    except Exception as e:
+        resultados.append(("Lagrange", "Error", str(e)))
+
+    # Spline Lineal
+    try:
+        polinomio_sp, x_eval, p_eval, error_sp = spline_interpolation(x, y, 'lineal')
+        resultados.append(("Spline Lineal", polinomio_sp, error_sp))
+    except Exception as e:
+        resultados.append(("Spline Lineal", "Error", str(e)))
+
+    # Spline Cúbico
+    try:
+        polinomio_spcub, x_eval, p_eval, error_spcub = spline_interpolation(x, y, 'cubico')
+        resultados.append(("Spline Cúbico", polinomio_spcub, error_spcub))
+    except Exception as e:
+        resultados.append(("Spline Cúbico", "Error", str(e)))
+
+    return resultados
