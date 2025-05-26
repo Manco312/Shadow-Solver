@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 
-def graficar_vandermonde(x, y, xpol, p):
+def graficar(x, y, xpol, p):
     plt.figure()
     plt.plot(x, y, 'ro', label='Puntos')
     plt.plot(xpol, p, 'b-', label='Polinomio interpolante')
