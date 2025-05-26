@@ -1,5 +1,5 @@
 Capítulo 3:
-- Métodos Newton interpolante, Lagrange, Spline (lineal y cúbico)
+- Métodos Spline (lineal y cúbico)
 
 General:
 

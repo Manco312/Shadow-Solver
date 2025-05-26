@@ -94,3 +94,49 @@ def newton_interpolation(x, y):
         mensaje_error = "No se puede eliminar un punto si solo hay dos."
 
     return coef, poly_str, xpol, p, mensaje_error
+
+def lagrange_interpolation(x, y):
+    def L(k, x_val):
+        terms = [(x_val - x[j])/(x[k] - x[j]) for j in range(len(x)) if j != k]
+        return np.prod(terms)
+
+    def P(x_val):
+        return sum(y[k] * L(k, x_val) for k in range(len(x)))
+
+    # Construir string del polinomio simbólicamente
+    # Esto es complejo para polinomio Lagrange general, aquí simplificamos imprimiendo términos base
+    poly_terms = []
+    n = len(x)
+    for k in range(n):
+        term = f"{y[k]:.6f} * "
+        term += " * ".join([f"(x - {x[j]:.2f})/({x[k]:.2f} - {x[j]:.2f})" for j in range(n) if j != k])
+        poly_terms.append(term)
+    poly_str = "P(x) = " + " + ".join(poly_terms)
+
+    # Evaluar el polinomio en un rango para graficar
+    xpol = np.linspace(min(x), max(x), 500)
+    p = np.array([P(val) for val in xpol])
+
+    # Quitar un punto aleatorio y recalcular
+    if len(x) > 2:
+        index_to_remove = np.random.randint(0, len(x))
+        x_reduced = np.delete(x, index_to_remove)
+        y_reduced = np.delete(y, index_to_remove)
+
+        def L_reduced(k, x_val):
+            terms = [(x_val - x_reduced[j])/(x_reduced[k] - x_reduced[j]) for j in range(len(x_reduced)) if j != k]
+            return np.prod(terms)
+
+        def P_reduced(x_val):
+            return sum(y_reduced[k] * L_reduced(k, x_val) for k in range(len(x_reduced)))
+
+        y_est = P_reduced(x[index_to_remove])
+        error = abs(y[index_to_remove] - y_est)
+        mensaje_error = (f"Se eliminó el punto x = {x[index_to_remove]:.2f}. "
+                         f"Valor estimado: y = {y_est:.4f}, "
+                         f"valor real: y = {y[index_to_remove]:.4f}, "
+                         f"error = {error:.4f}")
+    else:
+        mensaje_error = "No se puede eliminar un punto si solo hay dos."
+
+    return poly_str, xpol, p, mensaje_error

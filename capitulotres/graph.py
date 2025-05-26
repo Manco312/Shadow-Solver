@@ -8,7 +8,7 @@ def graficar(x, y, xpol, p):
     plt.plot(xpol, p, 'b-', label='Polinomio interpolante')
     plt.grid(True)
     plt.legend()
-    plt.title('Interpolación por Vandermonde')
+    plt.title('Interpolación')
     
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
