@@ -140,3 +140,239 @@ def lagrange_interpolation(x, y):
         mensaje_error = "No se puede eliminar un punto si solo hay dos."
 
     return poly_str, xpol, p, mensaje_error
+
+def spline_interpolation(x, y, tipo):
+    n = len(x)
+    
+    if tipo == 'lineal':
+        d = 1
+    elif tipo == 'cubico':
+        d = 3
+    else:
+        raise ValueError("Tipo de spline inválido")
+
+    A = np.zeros(((d + 1) * (n - 1), (d + 1) * (n - 1)))
+    b = np.zeros(((d + 1) * (n - 1),))
+
+    # Variables auxiliares
+    cua = x**2
+    cub = x**3
+    c = 0
+    h = 0
+
+    # Construcción del sistema
+    if d == 1:  # Lineal
+        for i in range(n - 1):
+            A[h, c] = x[i]
+            A[h, c + 1] = 1
+            b[h] = y[i]
+            c += 2
+            h += 1
+        c = 0
+        for i in range(1, n):
+            A[h, c] = x[i]
+            A[h, c + 1] = 1
+            b[h] = y[i]
+            c += 2
+            h += 1
+
+    elif d == 3:  # Cúbico
+        for i in range(n - 1):
+            A[h, c] = cub[i]
+            A[h, c + 1] = cua[i]
+            A[h, c + 2] = x[i]
+            A[h, c + 3] = 1
+            b[h] = y[i]
+            c += 4
+            h += 1
+
+        c = 0
+        for i in range(1, n):
+            A[h, c] = cub[i]
+            A[h, c + 1] = cua[i]
+            A[h, c + 2] = x[i]
+            A[h, c + 3] = 1
+            b[h] = y[i]
+            c += 4
+            h += 1
+
+        c = 0
+        for i in range(1, n - 1):
+            A[h, c] = 3 * cua[i]
+            A[h, c + 1] = 2 * x[i]
+            A[h, c + 2] = 1
+            A[h, c + 4] = -3 * cua[i]
+            A[h, c + 5] = -2 * x[i]
+            A[h, c + 6] = -1
+            b[h] = 0
+            c += 4
+            h += 1
+
+        c = 0
+        for i in range(1, n - 1):
+            A[h, c] = 6 * x[i]
+            A[h, c + 1] = 2
+            A[h, c + 4] = -6 * x[i]
+            A[h, c + 5] = -2
+            b[h] = 0
+            c += 4
+            h += 1
+
+        A[h, 0] = 6 * x[0]
+        A[h, 1] = 2
+        b[h] = 0
+        h += 1
+        A[h, -4] = 6 * x[-1]
+        A[h, -3] = 2
+        b[h] = 0
+
+    # Resolver sistema
+    val = np.linalg.solve(A, b)
+    coef = val.reshape(n - 1, d + 1)
+
+    # Construir string de polinomios
+    poly_str = ""
+    for i in range(n - 1):
+        coefs = coef[i]
+        terms = []
+        if d == 1:
+            # a1 x + a0
+            terms.append(f"({coefs[0]:.4f})x + ({coefs[1]:.4f})")
+        else:
+            # a3 x^3 + a2 x^2 + a1 x + a0
+            terms.append(f"({coefs[0]:.4f})x³ + ({coefs[1]:.4f})x² + ({coefs[2]:.4f})x + ({coefs[3]:.4f})")
+        poly_str += f"Intervalo [{x[i]:.4f}, {x[i+1]:.4f}]:  {terms[0]}\n"
+
+    # Evaluar spline en puntos para gráfica
+    xpol = np.linspace(x[0], x[-1], 500)
+    p = np.zeros_like(xpol)
+    for i in range(n - 1):
+        mask = (xpol >= x[i]) & (xpol <= x[i + 1])
+        xi = xpol[mask]
+        if d == 1:
+            # a1 x + a0
+            p[mask] = coef[i, 0] * xi + coef[i, 1]
+        else:
+            # a3 x^3 + a2 x^2 + a1 x + a0
+            p[mask] = coef[i, 0] * xi**3 + coef[i, 1] * xi**2 + coef[i, 2] * xi + coef[i, 3]
+
+    # Método de validación: quitar un dato y recalcular
+    if n > 2:
+        # quitar el segundo punto (índice 1)
+        idx_quitar = 1
+        x_red = np.delete(x, idx_quitar)
+        y_red = np.delete(y, idx_quitar)
+
+        coef_red, _, _, _ = spline_interpolation_aux(x_red, y_red, d)
+
+        # Evaluar en el x eliminado
+        xq = x[idx_quitar]
+
+        # Evaluar spline reducido en xq
+        y_est = evaluar_spline_punto(coef_red, x_red, xq, d)
+
+        error = abs(y[idx_quitar] - y_est)
+        mensaje_error = (f"Se eliminó el dato en x = {xq:.4f}. "
+                         f"Valor estimado: {y_est:.4f}, "
+                         f"Valor real: {y[idx_quitar]:.4f}, "
+                         f"Error = {error:.4f}")
+    else:
+        mensaje_error = "No se puede eliminar un punto si solo hay dos."
+
+    return poly_str, xpol, p, mensaje_error
+
+
+def spline_interpolation_aux(x, y, d):
+    # Igual que spline_interpolation pero sin la parte de validación y gráficos,
+    # solo para resolver sistema y devolver coeficientes.
+    n = len(x)
+    A = np.zeros(((d + 1) * (n - 1), (d + 1) * (n - 1)))
+    b = np.zeros(((d + 1) * (n - 1),))
+
+    cua = x**2
+    cub = x**3
+    c = 0
+    h = 0
+
+    if d == 1:  # Lineal
+        for i in range(n - 1):
+            A[h, c] = x[i]
+            A[h, c + 1] = 1
+            b[h] = y[i]
+            c += 2
+            h += 1
+        c = 0
+        for i in range(1, n):
+            A[h, c] = x[i]
+            A[h, c + 1] = 1
+            b[h] = y[i]
+            c += 2
+            h += 1
+
+    elif d == 3:  # Cúbico
+        for i in range(n - 1):
+            A[h, c] = cub[i]
+            A[h, c + 1] = cua[i]
+            A[h, c + 2] = x[i]
+            A[h, c + 3] = 1
+            b[h] = y[i]
+            c += 4
+            h += 1
+
+        c = 0
+        for i in range(1, n):
+            A[h, c] = cub[i]
+            A[h, c + 1] = cua[i]
+            A[h, c + 2] = x[i]
+            A[h, c + 3] = 1
+            b[h] = y[i]
+            c += 4
+            h += 1
+
+        c = 0
+        for i in range(1, n - 1):
+            A[h, c] = 3 * cua[i]
+            A[h, c + 1] = 2 * x[i]
+            A[h, c + 2] = 1
+            A[h, c + 4] = -3 * cua[i]
+            A[h, c + 5] = -2 * x[i]
+            A[h, c + 6] = -1
+            b[h] = 0
+            c += 4
+            h += 1
+
+        c = 0
+        for i in range(1, n - 1):
+            A[h, c] = 6 * x[i]
+            A[h, c + 1] = 2
+            A[h, c + 4] = -6 * x[i]
+            A[h, c + 5] = -2
+            b[h] = 0
+            c += 4
+            h += 1
+
+        A[h, 0] = 6 * x[0]
+        A[h, 1] = 2
+        b[h] = 0
+        h += 1
+        A[h, -4] = 6 * x[-1]
+        A[h, -3] = 2
+        b[h] = 0
+
+    val = np.linalg.solve(A, b)
+    coef = val.reshape(n - 1, d + 1)
+    return coef, None, None, None
+
+
+def evaluar_spline_punto(coef, x, xi, d):
+    # Evalúa spline en xi usando coeficientes y nodos x
+    n = len(x)
+    # Buscar intervalo correcto
+    for i in range(n - 1):
+        if x[i] <= xi <= x[i + 1]:
+            if d == 1:
+                return coef[i, 0] * xi + coef[i, 1]
+            else:
+                return coef[i, 0] * xi**3 + coef[i, 1] * xi**2 + coef[i, 2] * xi + coef[i, 3]
+    # Si no está en rango, devolver None o extrapolar (aquí None)
+    return None
