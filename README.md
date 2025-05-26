@@ -1,5 +1,13 @@
 # Cómo usar ShadowSolver 😼
 
+## 🌐 Ingresar desde la web
+
+En el siguiente link puedes ingresar a ShadowSolver (debido a temas de despliegue, puede demorarse entre 50 segundos y 1 minuto en cargar)
+
+[https://shadowsolver.onrender.com](https://shadowsolver.onrender.com)
+
+Si prefieres correrlo de forma local, se puede hacer siguiendo los siguientes pasos:
+
 ## 📥 Clonar el repositorio usando Git
 
 Asegúrate de tener **Git** instalado antes de realizar este paso.
