@@ -1,3 +1,2 @@
 General:
-- Opción de no aparecer informe? (CHP 1 & 2)
 - Refactorizar las templates con una base.html para aplicar principio DRY
