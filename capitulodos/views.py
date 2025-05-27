@@ -37,8 +37,13 @@ def jacobi_view(request):
 
             tabla, mensaje = jacobi(x0, A, b, tol, niter, usar_cifras)
 
-            # Ejecutar todos los métodos para la tabla comparativa
-            resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                # Ejecutar todos los métodos para la tabla comparativa
+                resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+            else:
+                resultados_todos = None
 
             context = {
                 'tabla': tabla,
@@ -84,8 +89,13 @@ def gauss_seidel_view(request):
 
             tabla, mensaje = gauss_seidel(x0, A, b, tol, niter, usar_cifras)
 
-            # Ejecutar todos los métodos para la tabla comparativa
-            resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                # Ejecutar todos los métodos para la tabla comparativa
+                resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+            else:
+                resultados_todos = None
 
             context = {
                 'tabla': tabla,
@@ -132,8 +142,13 @@ def sor_view(request):
 
             tabla, mensaje = sor(x0, A, b, tol, niter, w, usar_cifras)
 
-            # Ejecutar todos los métodos para la tabla comparativa
-            resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+            comparar = request.POST.get('comparar') == 'on'
+
+            if comparar:
+                # Ejecutar todos los métodos para la tabla comparativa
+                resultados_todos = ejecutar_todos(x0, A, b, tol, niter, usar_cifras)
+            else:
+                resultados_todos = None
 
             context.update({
                 'tabla': tabla,
