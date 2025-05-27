@@ -21,8 +21,13 @@ def biseccion_view(request):
         tabla, resultado, mensaje = biseccion(funcion, xi, xs, tol, niter, usar_cifras)
         grafico = graficar_funcion(funcion, float(xi), float(xs), resultado) if resultado else None
 
-        # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        comparar = request.POST.get('comparar') == 'on'
+
+        if comparar:
+            # Ejecutar todos los métodos
+            resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        else:
+            resultados_comparativos = None
 
         context = {
             'tabla': tabla,
@@ -54,8 +59,13 @@ def regla_falsa_view(request):
         tabla, resultado, mensaje = regla_falsa(funcion, xi, xs, tol, niter, usar_cifras)
         grafico = graficar_funcion(funcion, float(xi), float(xs), resultado) if resultado else None
 
-        # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        comparar = request.POST.get('comparar') == 'on'
+
+        if comparar:
+            # Ejecutar todos los métodos
+            resultados_comparativos = ejecutar_todos(f_str=funcion, g_str=None, xi=xi, xs=xs, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        else:
+            resultados_comparativos = None
 
         context = {
             'tabla': tabla,
@@ -86,8 +96,13 @@ def punto_fijo_view(request):
         resultado, tabla, mensaje = punto_fijo(x0, tol, niter, f_str, g_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
 
-        # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=g_str, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        comparar = request.POST.get('comparar') == 'on'
+
+        if comparar:
+            # Ejecutar todos los métodos
+            resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=g_str, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        else:
+            resultados_comparativos = None
 
         context = {
             'funcion': f_str,
@@ -117,8 +132,13 @@ def newton_view(request):
         resultado, tabla, mensaje = newton_raphson(x0, tol, niter, f_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 2, resultado + 5, resultado)
 
-        # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        comparar = request.POST.get('comparar') == 'on'
+
+        if comparar:
+            # Ejecutar todos los métodos
+            resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        else:
+            resultados_comparativos = None
 
         context = {
             'funcion': f_str,
@@ -148,8 +168,13 @@ def secante_view(request):
         resultado, tabla, mensaje = secante(x0, x1, tol, niter, f_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 5, x1 + 5, resultado)
 
-        # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=x1, cs=usar_cifras)
+        comparar = request.POST.get('comparar') == 'on'
+
+        if comparar:
+            # Ejecutar todos los métodos
+            resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=x1, cs=usar_cifras)
+        else:
+            resultados_comparativos = None
 
         context = {
             'funcion': f_str,
@@ -180,8 +205,13 @@ def raices_multiples_view(request):
         resultado, tabla, mensaje = raices_multiples(x0, tol, niter, f_str, usar_cifras)
         grafico = graficar_funcion(f_str, x0 - 5, x0 + 5, resultado)
 
-        # Ejecutar todos los métodos
-        resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        comparar = request.POST.get('comparar') == 'on'
+
+        if comparar:
+            # Ejecutar todos los métodos
+            resultados_comparativos = ejecutar_todos(f_str=f_str, g_str=None, xi=x0, xs=None, tol=tol, niter=niter, x1=None, cs=usar_cifras)
+        else:
+            resultados_comparativos = None
 
         context = {
             'f': f_str,
