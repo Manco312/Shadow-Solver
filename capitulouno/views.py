@@ -6,6 +6,7 @@ from .graph import graficar_funcion
 
 def optionsch1(request):
     #Hola
+    #chao
     return render(request, 'optionsch1.html')
 
 def biseccion_view(request):
