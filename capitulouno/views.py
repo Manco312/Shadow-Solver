@@ -5,6 +5,7 @@ from .graph import graficar_funcion
 # Create your views here.
 
 def optionsch1(request):
+    #Hola
     return render(request, 'optionsch1.html')
 
 def biseccion_view(request):
